@@ -1,16 +1,15 @@
 import requests
-import xlrd
-import time
+import openpyxl
 
-def read_tickers(filename): #filename in xlsx presumably
-    stock_prices = xlrd.open_workbook(filename)
-    sheet = stock_prices.sheet_by_index(0)
-    return sheet.col_values(0,1)
 
-url = 'https://www.alphavantage.co/query'
-tickers = read_tickers("listcode.xlsm")
+target_wb = openpyxl.load_workbook("listcode.xlsx")
+target_ws = target_wb.active
+
+tickers = [x.value for x in target_ws["A"]]
+print(tickers)
 
 prices = {}
+url = 'https://www.alphavantage.co/query'
 
 for sym in tickers:
 	while True:
@@ -27,7 +26,13 @@ for sym in tickers:
 			print(data["Global Quote"]["05. price"])
 			prices[sym] = data["Global Quote"]["05. price"]
 			break
-	
-		
+
+
+columns = target_ws.max_column + 1
+for i,x in enumerate(target_ws["A"],1):
+	print(str(i) + " " + str(columns))
+	target_ws.cell(row=i, column=columns, value=prices[x.value])
+	target_wb.save("listcode.xlsx")
+
 
 	
