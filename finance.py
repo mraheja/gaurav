@@ -23,9 +23,9 @@ for sym in tickers:
 		resp = requests.get(url=url, params=params)
 		data = resp.json()
 		if("Global Quote" in data):
-			print(str(sym) + str(keys[U]))
+			print(str(sym))
 			print(data["Global Quote"]["05. price"])
-			price[sym] = data["Global Quote"]["05. price"]
+			prices[sym] = data["Global Quote"]["05. price"]
 			break
 	
 		
